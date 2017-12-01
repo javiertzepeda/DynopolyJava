@@ -8,6 +8,7 @@ public class Location {
 	private boolean isMortgaged; /* is true if the the location has been mortgaged */
 	private int RentValue; /* holds the amount of rent */
 	private int PlayerOwner; /* holds the unique PlayerNumber of the owner of the location */
+	private int LandingCount; /* holds the number of times a player has landed on this location */
 
 	public Location() {
 		LocationName = "";
@@ -17,6 +18,7 @@ public class Location {
 		isMortgaged = false;
 		RentValue = 0;
 		PlayerOwner = -1;
+		LandingCount = 0;
 	}
 	
 	Location(String LocationNameInput, int LocationTypeInput, int PurchasePriceInput, int MortgageValueInput, int RentValueInput) {
@@ -27,6 +29,7 @@ public class Location {
 		isMortgaged = false;
 		RentValue = RentValueInput;
 		PlayerOwner = -1;
+		LandingCount = 0;
 	}
 	
 	String GetLocationName() {
@@ -38,15 +41,19 @@ public class Location {
 	}
 	
 	int GetPurchasePrice() {
-		return PurchasePrice;
+		return PurchasePrice + this.GetPopularityBonus(1);
 	}
 	
 	int GetMortgageValue() {
-		return MortgageValue;
+		return MortgageValue + this.GetPopularityBonus(1);
 	}
 	
 	int GetRentValue() {
-		return RentValue;
+		return RentValue + this.GetPopularityBonus(1);
+	}
+	
+	int GetPopularityBonus(int modifier){
+		return modifier*LandingCount;
 	}
 	
 	int GetPlayerOwner() {
@@ -68,6 +75,14 @@ public class Location {
 		else {
 			isMortgaged = true;
 		}
+	}
+	
+	void IncrementLandingCount(){
+		LandingCount++;
+	}
+	
+	int GetLandingCount(){
+		return LandingCount;
 	}
 
 

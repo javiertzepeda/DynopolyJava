@@ -1,11 +1,5 @@
 package engine;
 
-/*
-Author: Javier T Zepeda
-
-Date: 10/19/2016
-*/
-
 
 
 public class Player {

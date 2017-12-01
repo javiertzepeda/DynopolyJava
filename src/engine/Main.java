@@ -4,16 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-/*
-Author: Javier T Zepeda
-
-Date: 10/19/2016
-*/
-
 public class Main{
-	//#include "MonopolyLibrary.h"
-	
-	
 	/* definition of location codes */
 	private static final int GO =  0;
 	private static final int PROPERTY = 1;
@@ -21,7 +12,7 @@ public class Main{
 	private static final int GOTOJAIL = 3;
 	private static final int FREEPARKING = 4;
 	
-	/* defintion of Number of Locations and Maximum Number of Players, used for board creation */
+	/* definition of Number of Locations and Maximum Number of Players, used for board creation */
 	private static final int NumLocations  = 26;
 	private static final int PlayerMax = 10;
 	
@@ -349,6 +340,7 @@ public class Main{
 			if (InJailCheck() == false) { // Before moving player, checks to see if a Player is in jail and needs to pay a fine
 				PlayerDB[CurrentPlayer].MoveLocation(Die1 + Die2); // Moves Player to new location, checks if they passed go (+$200)
 				String CurrentPlayerLocation = LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationName(); // gets string data for the location that CurrentPlayer moved to 
+				LocationDB[PlayerDB[CurrentPlayer].GetLocation()].IncrementLandingCount(); // increase variable in location that stores the number of times a player has landed on it
 				System.out.println(String.format("Player %d moves %d spaces and lands on %s.\n", CurrentPlayer + 1, Die1 + Die2, CurrentPlayerLocation));
 				LandingOnCheck(); // Processes location to see if user landed on jail, on another player's property, an unpurchased property, or a property that doesn't require action
 			}
