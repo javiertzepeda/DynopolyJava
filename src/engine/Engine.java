@@ -17,8 +17,6 @@ public class Engine{
 	
 	static Player[] players = new Player[MAX_PLAYERS]; //contains player data
 	
-	static Location[] board = new Location[Board.MAX_LOCATION]; //contains location data
-
 	static Scanner in = new Scanner(System.in);
 	/* Adds the number of players to PlayerDB as specified by the integer input
 		Variables changed - PlayerDB */
@@ -66,66 +64,76 @@ public class Engine{
 		for if they would like to mortgage or unmortgage any properties.
 		Possible variables changed - A properties' mortgage status, or a players' total money*/
 	static void mortgageCheck(){
-		int unmortgagedPropertiesCount = 0;
-		int mortgagedPropertiesCount = 0;
-		for (int i = 0; i < Board.MAX_LOCATION; i++) {
-			if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged()) {
-				mortgagedPropertiesCount++;
-			}
-			else {
-				unmortgagedPropertiesCount++;
-			}
-		}
-		if (unmortgagedPropertiesCount > 0) {
-			System.out.printf("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.%n", unmortgagedPropertiesCount, players[currentPlayer].getMoney());
+		if (getUnmortgagedCount() > 0) {
+			System.out.printf("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.%n", getUnmortgagedCount(), getCurrentPlayer().getMoney());
 			if (askUserQuestion()) {
 				for (int i = 0; i < Board.MAX_LOCATION; i++) {
-					if (board[i].getPlayerOwner() == currentPlayer && !board[i].isMortgaged()) {
-						System.out.printf("Would you like to mortgage %s? Current player has $%d cash.%n", board[i].getLocationName(), players[currentPlayer].getMoney());
+					if (Board.board[i].getPlayerOwner() == currentPlayer && !Board.board[i].isMortgaged()) {
+						System.out.printf("Would you like to mortgage %s? Current player has $%d cash.%n", Board.board[i].getLocationName(), getCurrentPlayer().getMoney());
 						if (askUserQuestion()) {
-							board[i].changeMortgageProperty();
-							players[currentPlayer].changeMoney(board[i].getMortgageValue());
+							Board.board[i].changeMortgageProperty();
+							getCurrentPlayer().changeMoney(Board.board[i].getMortgageValue());
 						}
 					}
 				}
 			}
 		}
-		if (mortgagedPropertiesCount > 0) {
-			System.out.printf("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.%n", mortgagedPropertiesCount, players[currentPlayer].getMoney());
+		if (getMortgagedCount() > 0) {
+			System.out.printf("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.%n", getMortgagedCount(), getCurrentPlayer().getMoney());
 			if (askUserQuestion()) {
 				for (int i = 0; i < Board.MAX_LOCATION; i++) {
-					if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged()) {
-						int unmortgageAmount = (board[i].getMortgageValue() + (int)(board[i].getMortgageValue() / 10));
-						System.out.printf("Would you like to unmortgage %s for $%d? Current player has $%d cash.", board[i].getLocationName(), unmortgageAmount, players[currentPlayer].getMoney());
+					if (Board.board[i].getPlayerOwner() == currentPlayer && Board.board[i].isMortgaged()) {
+						int unmortgageAmount = (Board.board[i].getMortgageValue() + (int)(Board.board[i].getMortgageValue() / 10));
+						System.out.printf("Would you like to unmortgage %s for $%d? Current player has $%d cash.", Board.board[i].getLocationName(), unmortgageAmount, getCurrentPlayer().getMoney());
 						if (askUserQuestion()) {
-							if (players[currentPlayer].getMoney() < board[players[currentPlayer].getLocation()].getPurchasePrice()) {
+							if (getCurrentPlayer().getMoney() < getCurrentPlayerLocation().getPurchasePrice()) {
 								System.out.printf("Player %d does not have enough money to unmortgage this property.%n", currentPlayer + 1);
 								return;
 							}
-							board[i].changeMortgageProperty();
-							players[currentPlayer].changeMoney(-1 * unmortgageAmount);
+							Board.board[i].changeMortgageProperty();
+							getCurrentPlayer().changeMoney(-1 * unmortgageAmount);
 						}
 					}
 				}
 			}
 		}
 	}
+
+	public static int getMortgagedCount() {
+		int count = 0;
+		for (int i = 0; i < Board.MAX_LOCATION; i++) {
+			if (Board.board[i].getPlayerOwner() == currentPlayer && Board.board[i].isMortgaged()) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public static int getUnmortgagedCount() {
+		int count = 0;
+		for (int i = 0; i < Board.MAX_LOCATION; i++) {
+			if (Board.board[i].getPlayerOwner() == currentPlayer && !Board.board[i].isMortgaged()) {
+				count++;
+			}
+		}
+		return count;
+	}
 	
 	/* Checks whether CurrentPlayer is in Jail and hasn't paid and checks if they rolled doubles or want to pay to get out
 		Possible variables changed - Jail Property player owner, players' total money, Array JailDB values */
 	static boolean isPlayerJailed() {
-		if (board[players[currentPlayer].getLocation()].getLocationType() == JAIL && players[currentPlayer].isJailed()) {
+		if (getCurrentPlayerLocation().getLocationType() == JAIL && getCurrentPlayer().isJailed()) {
 			System.out.printf("Player %d is in jail.%n", currentPlayer + 1);
 			if (die1 == die2) {
 				System.out.printf("Since player %d has rolled doubles, they are now out of jail.%n", currentPlayer + 1);
-				players[currentPlayer].changeJailStatus();
+				getCurrentPlayer().changeJailStatus();
 				return true;
-			}else if (players[currentPlayer].getMoney() > 50) {
-				System.out.printf("Would Player %d like to pay $50 and get out of jail? Current player has $%d cash.%n", currentPlayer + 1,players[currentPlayer].getMoney());
+			}else if (getCurrentPlayer().getMoney() > 50) {
+				System.out.printf("Would Player %d like to pay $50 and get out of jail? Current player has $%d cash.%n", currentPlayer + 1,getCurrentPlayer().getMoney());
 				if (askUserQuestion()) {
-					players[currentPlayer].changeMoney(-50);
+					getCurrentPlayer().changeMoney(-50);
 					System.out.printf("Player %d has paid the fine and is now out of jail.%n", currentPlayer + 1);
-					players[currentPlayer].changeJailStatus();
+					getCurrentPlayer().changeJailStatus();
 					return true;
 				}
 				else {
@@ -142,45 +150,53 @@ public class Engine{
 			return false;
 		}
 	}
+
+	public static Player getCurrentPlayer() {
+		return players[currentPlayer];
+	}
+
+	public static Location getCurrentPlayerLocation() {
+		return Board.board[getCurrentPlayer().getLocation()];
+	}
 	
 	/* Checks current location of CurrentPlayer and prompts for actions if appropriate */
 	static void landingOnCheck() {
-		if (board[players[currentPlayer].getLocation()].getLocationType() == PROPERTY) {
-			int CurrentLocationOwner = board[players[currentPlayer].getLocation()].getPlayerOwner();
-			if (CurrentLocationOwner == -1) {
-				System.out.printf("No one owns this location. Would player %d like to purchase it for $%d? Current player has $%d cash.%n", currentPlayer + 1, board[players[currentPlayer].getLocation()].getPurchasePrice(), players[currentPlayer].getMoney());
+		if (getCurrentPlayerLocation().getLocationType() == PROPERTY) {
+			int currentLocationOwner = getCurrentPlayerLocation().getPlayerOwner();
+			if (currentLocationOwner == -1) {
+				System.out.printf("No one owns this location. Would player %d like to purchase it for $%d? Current player has $%d cash.%n", currentPlayer + 1, getCurrentPlayerLocation().getPurchasePrice(), getCurrentPlayer().getMoney());
 				mortgageCheck();
 				if (askUserQuestion()) {
-					if (players[currentPlayer].getMoney() < board[players[currentPlayer].getLocation()].getPurchasePrice()) {
+					if (getCurrentPlayer().getMoney() < getCurrentPlayerLocation().getPurchasePrice()) {
 						System.out.printf("Player %d does not have enough money to purchase this property.%n", currentPlayer + 1);
 						return;
 					}
-					board[players[currentPlayer].getLocation()].setPlayerOwner(currentPlayer);
-					players[currentPlayer].changeMoney(-1 * board[players[currentPlayer].getLocation()].getPurchasePrice());
-					System.out.printf("Player %d now owns %s%n", currentPlayer+1, board[players[currentPlayer].getLocation()].getLocationName());
+					getCurrentPlayerLocation().setPlayerOwner(currentPlayer);
+					getCurrentPlayer().changeMoney(-1 * getCurrentPlayerLocation().getPurchasePrice());
+					System.out.printf("Player %d now owns %s%n", currentPlayer+1, getCurrentPlayerLocation().getLocationName());
 					return;
 				}
 			}
-			else if (CurrentLocationOwner == currentPlayer) {
+			else if (currentLocationOwner == currentPlayer) {
 				System.out.printf("Player %d currently owns this location, and checks on all the employees to make sure they are happy.%n", currentPlayer+1);
 				return;
 			}
-			else if (!board[players[currentPlayer].getLocation()].isMortgaged()){
-				int RentValue = board[players[currentPlayer].getLocation()].getRentValue();
-				System.out.printf("Player %d currently owns this location, and so player %d must pay the rent amount of $%d.%n", CurrentLocationOwner + 1, currentPlayer + 1, RentValue);
-				players[currentPlayer].changeMoney(-1*RentValue);
-				players[CurrentLocationOwner].changeMoney(RentValue);
+			else if (!getCurrentPlayerLocation().isMortgaged()){
+				int rentValue = getCurrentPlayerLocation().getRentValue();
+				System.out.printf("Player %d currently owns this location, and so player %d must pay the rent amount of $%d.%n", currentLocationOwner + 1, currentPlayer + 1, rentValue);
+				getCurrentPlayer().changeMoney(-1*rentValue);
+				players[currentLocationOwner].changeMoney(rentValue);
 				return;
 			}
 			else {
-				System.out.printf("Player %d currently owns this location, but it is currently mortgaged so player %d does not have to pay rent.%n", CurrentLocationOwner + 1, currentPlayer + 1);
+				System.out.printf("Player %d currently owns this location, but it is currently mortgaged so player %d does not have to pay rent.%n", currentLocationOwner + 1, currentPlayer + 1);
 			}
 		}
-		else if (board[players[currentPlayer].getLocation()].getLocationType() == GOTOJAIL) {
+		else if (getCurrentPlayerLocation().getLocationType() == GOTOJAIL) {
 			for (int i = 0; i < Board.MAX_LOCATION; i++) {
-				if (board[i].getLocationType() == JAIL) {
-					players[currentPlayer].changeJailStatus();
-					players[currentPlayer].setLocation(i);
+				if (Board.board[i].getLocationType() == JAIL) {
+					getCurrentPlayer().changeJailStatus();
+					getCurrentPlayer().setLocation(i);
 					System.out.printf("Player %d has been moved to jail.%n", currentPlayer + 1);
 					return;
 				}
