@@ -3,8 +3,6 @@ package engine;
 
 
 public class Player {
-	private static final int GO_LOCATION = 0;
-	private static final int MAX_LOCATION = 26; /* Number of locations on the board */
 	private static final int INITIAL_MONEY_AMOUNT = 1500; /* Initial amount for each player at the start of the game */
 
 	private int playerNumber; /* holds the players unique number for identification */
@@ -16,7 +14,7 @@ public class Player {
 	public Player(){
 		playerNumber = 0;
 		money = INITIAL_MONEY_AMOUNT;
-		location = GO_LOCATION;
+		location = Board.GO_LOCATION;
 		jailed = false;
 		playing = true;
 	}
@@ -31,9 +29,9 @@ public class Player {
 	}
 	
 	void moveLocation(int locationsToMove) {
-		if ((location + locationsToMove) > (MAX_LOCATION - 1)) {
+		if ((location + locationsToMove) > (Board.MAX_LOCATION - 1)) {
 			changeMoney(200);
-			location = (location + locationsToMove) % (MAX_LOCATION);
+			location = (location + locationsToMove) % (Board.MAX_LOCATION);
 		}
 		else {
 			location = location + locationsToMove;

@@ -7,9 +7,7 @@ import java.util.concurrent.TimeUnit;
 import static engine.Location.Type.*;
 
 public class Main{
-	/* definition of Number of Locations and Maximum Number of Players, used for board creation */
-	private static final int NumLocations  = 26;
-	private static final int PlayerMax = 10;
+	private static final int MAX_PLAYERS = 10;
 	
 	/* global variables */
 	static int Die1 = 0;
@@ -17,9 +15,9 @@ public class Main{
 	static int NumberPlayers;
 	static int CurrentPlayer;
 	
-	static Player[] PlayerDB = new Player[PlayerMax]; //contains player data
+	static Player[] PlayerDB = new Player[MAX_PLAYERS]; //contains player data
 	
-	static Location[] LocationDB = new Location[NumLocations]; //contains location data
+	static Location[] LocationDB = new Location[Board.MAX_LOCATION]; //contains location data
 	
 	/* Adds the number of players to PlayerDB as specified by the integer input
 		Variables changed - PlayerDB */
@@ -85,7 +83,7 @@ public class Main{
 	static void MortgageCheck(){
 		int UnMortgagedPropertiesCount = 0;
 		int MortgagedPropertiesCount = 0;
-		for (int i = 0; i < NumLocations; i++) {
+		for (int i = 0; i < Board.MAX_LOCATION; i++) {
 			if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == false) {
 				UnMortgagedPropertiesCount++;
 			}
@@ -97,7 +95,7 @@ public class Main{
 			System.out.println(String.format("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.\n", UnMortgagedPropertiesCount, PlayerDB[CurrentPlayer].getMoney()));
 			boolean answer = AskUserQuestion();
 			if (answer == true) {
-				for (int i = 0; i < NumLocations; i++) {
+				for (int i = 0; i < Board.MAX_LOCATION; i++) {
 					if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == false) {
 						System.out.println(String.format("Would you like to mortgage %s? Current player has $%d cash.\n", LocationDB[i].getLocationName(), PlayerDB[CurrentPlayer].getMoney()));
 						boolean answer2 = AskUserQuestion();
@@ -113,7 +111,7 @@ public class Main{
 			System.out.println(String.format("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.\n", MortgagedPropertiesCount, PlayerDB[CurrentPlayer].getMoney()));
 			boolean answer = AskUserQuestion();
 			if (answer == true) {
-				for (int i = 0; i < NumLocations; i++) {
+				for (int i = 0; i < Board.MAX_LOCATION; i++) {
 					if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == true) {
 						int UnMortgageAmount = (LocationDB[i].getMortgageValue() + (int)(LocationDB[i].getMortgageValue() / 10));
 						System.out.println(String.format("Would you like to unmortgage %s for $%d? Current player has $%d cash.\n", LocationDB[i].getLocationName(), UnMortgageAmount, PlayerDB[CurrentPlayer].getMoney()));
@@ -200,7 +198,7 @@ public class Main{
 			}
 		}
 		else if (LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationType() == GOTOJAIL) {
-			for (int i = 0; i < NumLocations; i++) {
+			for (int i = 0; i < Board.MAX_LOCATION; i++) {
 				if (LocationDB[i].getLocationType() == JAIL) {
 					PlayerDB[CurrentPlayer].changeJailStatus();
 					PlayerDB[CurrentPlayer].setLocation(i);
@@ -254,7 +252,7 @@ public class Main{
 		NumberPlayers = Integer.parseInt(reader.next().trim());
 		
 	
-		while (NumberPlayers <= 1 || NumberPlayers > PlayerMax) {
+		while (NumberPlayers <= 1 || NumberPlayers > MAX_PLAYERS) {
 			System.out.println("Please choose a number from 2 through 10. How many players? ");
 			NumberPlayers = Integer.parseInt(reader.next().trim());		
 		}
