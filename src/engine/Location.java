@@ -1,13 +1,8 @@
 package engine;
 
-public class Location {
-
-	public enum Type {
-		GO, PROPERTY, JAIL, GOTOJAIL, FREEPARKING
-	};
+public abstract class Location {
 
 	private String locationName; /* holds a pointer to the strings name */
-	private Type locationType; /* holds a number representing the type of location */
 	private int purchasePrice; /* holds an amount of the price of purchase for the location */
 	private int mortgageValue; /* holds an amount of cash given to the player when mortgaged */
 	private boolean mortgaged; /* is true if the the location has been mortgaged */
@@ -16,12 +11,11 @@ public class Location {
 	private int landingCount; /* holds the number of times a player has landed on this location */
 
 	public Location() {
-		this("",Type.PROPERTY,0,0,0);
+		this("",0,0,0);
 	}
 	
-	public Location(String locationName, Type locationType, int purchasePrice, int mortgageValue, int rentValue) {
+	public Location(String locationName, int purchasePrice, int mortgageValue, int rentValue) {
 		this.locationName = locationName;
-		this.locationType = locationType;
 		this.purchasePrice = purchasePrice;
 		this.mortgageValue = mortgageValue;
 		this.mortgaged = false;
@@ -31,10 +25,6 @@ public class Location {
 	
 	String getLocationName() {
 		return locationName;
-	}
-	
-	Type getLocationType() {
-		return locationType;
 	}
 	
 	int getPurchasePrice() {
@@ -82,6 +72,7 @@ public class Location {
 		return landingCount;
 	}
 
-
+	// TODO Make abstract
+	public abstract <R> R accept(LocationVisitor<R> v);
 
 }
