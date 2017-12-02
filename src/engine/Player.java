@@ -5,27 +5,18 @@ package engine;
 public class Player {
 	private static final int INITIAL_MONEY_AMOUNT = 1500; /* Initial amount for each player at the start of the game */
 
-	private int playerNumber; /* holds the players unique number for identification */
+	private String name;
 	private int money; /* holds the players total money amount */
 	private int location; /* holds the players current location */
 	private boolean jailed; /* flag that specifies whether the player is in jail and hasn't paid the fine yet */
 	private boolean playing; /* if a flag that is true if the player is still playing */
 	
-	public Player(){
-		playerNumber = 0;
+	public Player(String name){
+		this.name = name;
 		money = INITIAL_MONEY_AMOUNT;
 		location = Board.GO_LOCATION;
 		jailed = false;
 		playing = true;
-	}
-
-	
-	void setPlayerNumber(int number) {
-		playerNumber = number;
-	}
-	
-	int getPlayerNumber() {
-		return playerNumber;
 	}
 	
 	void moveLocation(int locationsToMove) {
@@ -36,6 +27,9 @@ public class Player {
 		else {
 			location = location + locationsToMove;
 		}
+	}
+	public String getName() {
+		return name;
 	}
 	
 	int getLocation() {
@@ -53,7 +47,6 @@ public class Player {
 	void changeMoney(int amount) {
 		money = money + amount;
 		if (money < 0) {
-			System.out.println(String.format("Player %d is out of the game!", getPlayerNumber()));
 			playing = false;
 		}
 	}
@@ -70,5 +63,9 @@ public class Player {
 		else {
 			jailed = true;
 		}
+	}
+	
+	@Override public String toString() {
+		return name;
 	}
 }

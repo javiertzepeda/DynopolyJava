@@ -12,28 +12,20 @@ public class Location {
 	private int mortgageValue; /* holds an amount of cash given to the player when mortgaged */
 	private boolean mortgaged; /* is true if the the location has been mortgaged */
 	private int rentValue; /* holds the amount of rent */
-	private int playerOwner; /* holds the unique PlayerNumber of the owner of the location */
+	private Player playerOwner; /* holds the unique PlayerNumber of the owner of the location */
 	private int landingCount; /* holds the number of times a player has landed on this location */
 
 	public Location() {
-		locationName = "";
-		locationType = Type.PROPERTY;
-		purchasePrice = 0;
-		mortgageValue = 0;
-		mortgaged = false;
-		rentValue = 0;
-		playerOwner = -1;
-		landingCount = 0;
+		this("",Type.PROPERTY,0,0,0);
 	}
 	
-	Location(String locationName, Type locationType, int purchasePrice, int mortgageValue, int rentValue) {
+	public Location(String locationName, Type locationType, int purchasePrice, int mortgageValue, int rentValue) {
 		this.locationName = locationName;
 		this.locationType = locationType;
 		this.purchasePrice = purchasePrice;
 		this.mortgageValue = mortgageValue;
 		this.mortgaged = false;
 		this.rentValue = rentValue;
-		this.playerOwner = -1;
 		this.landingCount = 0;
 	}
 	
@@ -61,11 +53,11 @@ public class Location {
 		return modifier*landingCount;
 	}
 	
-	int getPlayerOwner() {
+	Player getPlayerOwner() {
 		return playerOwner;
 	}
 	
-	void setPlayerOwner(int playerOwner) {
+	void setPlayerOwner(Player playerOwner) {
 		this.playerOwner = playerOwner;
 	}
 	
