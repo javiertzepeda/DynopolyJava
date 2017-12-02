@@ -41,40 +41,28 @@ public class Main{
 				numberOfPlayersInGame++;
 			}
 		}
-		if (numberOfPlayersInGame > 1) {
-			return false;
-		}
-	    return true;
+		return numberOfPlayersInGame == 1;
 	}
 	
 	/* Calculates the next player
 		Variables changed - CurrentPlayer */
 	static void nextPlayer(){
-		currentPlayer++;
-		if (currentPlayer == numberOfPlayers) {
-			currentPlayer = 0;
-		}
+		currentPlayer = (currentPlayer + 1) % numberOfPlayers;
 	}
 	
 	/* Waits for keyboard input of user for a Yes or No question and returns response
 		Variables changed - None */
 	static boolean askUserQuestion() {
 		char answer = 'q';
-		while (answer != 'Y' && answer != 'y' && answer != 'N' && answer != 'n') {
+		while (answer != 'y' && answer != 'n') {
 			Scanner reader = new Scanner(System.in);
-			answer = reader.next().trim().charAt(0);
+			answer = reader.next().trim().toLowerCase().charAt(0);
 			
-			if (answer != 'Y' && answer != 'y' && answer != 'N' && answer != 'n' && answer != 'q') {
+			if (answer != 'y' && answer != 'n' && answer != 'q') {
 				System.out.println("Please enter either Y/N.\n");
 			}
 		}
-		if (answer == 'Y' || answer == 'y') {
-			return true;
-		}
-		if (answer == 'N' || answer == 'n') {
-			return false;
-		}
-	    return false;
+		return answer == 'y';
 	}
 	
 	/* Calculates if CurrentPlayer has any properties that can be mortgaged or unmortgaged and asks player
@@ -84,22 +72,22 @@ public class Main{
 		int unmortgagedPropertiesCount = 0;
 		int mortgagedPropertiesCount = 0;
 		for (int i = 0; i < Board.MAX_LOCATION; i++) {
-			if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged() == false) {
+			if (board[i].getPlayerOwner() == currentPlayer && !board[i].isMortgaged()) {
 				unmortgagedPropertiesCount++;
 			}
-			if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged() == true) {
+			if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged()) {
 				mortgagedPropertiesCount++;
 			}
 		}
 		if (unmortgagedPropertiesCount > 0) {
 			System.out.println(String.format("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.\n", unmortgagedPropertiesCount, players[currentPlayer].getMoney()));
 			boolean answer = askUserQuestion();
-			if (answer == true) {
+			if (answer) {
 				for (int i = 0; i < Board.MAX_LOCATION; i++) {
-					if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged() == false) {
+					if (board[i].getPlayerOwner() == currentPlayer && !board[i].isMortgaged()) {
 						System.out.println(String.format("Would you like to mortgage %s? Current player has $%d cash.\n", board[i].getLocationName(), players[currentPlayer].getMoney()));
 						boolean answer2 = askUserQuestion();
-						if (answer2 == true) {
+						if (answer2) {
 							board[i].changeMortgageProperty();
 							players[currentPlayer].changeMoney(board[i].getMortgageValue());
 						}
@@ -110,13 +98,13 @@ public class Main{
 		if (mortgagedPropertiesCount > 0) {
 			System.out.println(String.format("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.\n", mortgagedPropertiesCount, players[currentPlayer].getMoney()));
 			boolean answer = askUserQuestion();
-			if (answer == true) {
+			if (answer) {
 				for (int i = 0; i < Board.MAX_LOCATION; i++) {
-					if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged() == true) {
+					if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged()) {
 						int unmortgageAmount = (board[i].getMortgageValue() + (int)(board[i].getMortgageValue() / 10));
 						System.out.println(String.format("Would you like to unmortgage %s for $%d? Current player has $%d cash.\n", board[i].getLocationName(), unmortgageAmount, players[currentPlayer].getMoney()));
 						boolean answer2 = askUserQuestion();
-						if (answer2 == true) {
+						if (answer2) {
 							if (players[currentPlayer].getMoney() < board[players[currentPlayer].getLocation()].getPurchasePrice()) {
 								System.out.println(String.format("Player %d does not have enough money to unmortgage this property.\n", currentPlayer + 1));
 								return;
@@ -142,7 +130,7 @@ public class Main{
 			}else if (players[currentPlayer].getMoney() > 50) {
 				System.out.println(String.format("Would Player %d like to pay $50 and get out of jail? Current player has $%d cash.\n", currentPlayer + 1,players[currentPlayer].getMoney()));
 				boolean answer = askUserQuestion();
-				if (answer == true) {
+				if (answer) {
 					players[currentPlayer].changeMoney(-50);
 					System.out.println(String.format("Player %d has paid the fine and is now out of jail.\n", currentPlayer + 1));
 					players[currentPlayer].changeJailStatus();
@@ -171,7 +159,7 @@ public class Main{
 				System.out.println(String.format("No one owns this location. Would player %d like to purchase it for $%d? Current player has $%d cash.\n", currentPlayer + 1, board[players[currentPlayer].getLocation()].getPurchasePrice(), players[currentPlayer].getMoney()));
 				mortgageCheck();
 				boolean answer = askUserQuestion();
-				if (answer == true) {
+				if (answer) {
 					if (players[currentPlayer].getMoney() < board[players[currentPlayer].getLocation()].getPurchasePrice()) {
 						System.out.println(String.format("Player %d does not have enough money to purchase this property.", currentPlayer + 1));
 						return;
@@ -186,7 +174,7 @@ public class Main{
 				System.out.println(String.format("Player %d currently owns this location, and checks on all the employees to make sure they are happy.\n", currentPlayer+1));
 				return;
 			}
-			else if (board[players[currentPlayer].getLocation()].isMortgaged()==false){
+			else if (!board[players[currentPlayer].getLocation()].isMortgaged()){
 				int RentValue = board[players[currentPlayer].getLocation()].getRentValue();
 				System.out.println(String.format("Player %d currently owns this location, and so player %d must pay the rent amount of $%d.\n", CurrentLocationOwner + 1, currentPlayer + 1, RentValue));
 				players[currentPlayer].changeMoney(-1*RentValue);
@@ -319,7 +307,7 @@ public class Main{
 		System.out.println(String.format("Player %d has been randomly selected to go first.\n", currentPlayer+1));
 	
 		/* Infinitely loops game until only one player is left */
-		while (hasGameEnded() == false) {
+		while (!hasGameEnded()) {
 			die1 = (rand.nextInt(50) + 1) % 6 + 1;
 			die2 = (rand.nextInt(50) + 1) % 6 + 1;
 			try {
@@ -330,7 +318,7 @@ public class Main{
 			System.out.println(String.format("It is player %d's turn.\n", currentPlayer + 1));
 			//MortgageCheck(); /* Uncomment to ask player if they would like to mortgage/unmortgage before they roll */
 			System.out.println(String.format("Player %d has rolled a %d and a %d.\n", currentPlayer + 1, die1, die2));
-			if (isPlayerJailed() == false) { // Before moving player, checks to see if a Player is in jail and needs to pay a fine
+			if (!isPlayerJailed()) { // Before moving player, checks to see if a Player is in jail and needs to pay a fine
 				players[currentPlayer].moveLocation(die1 + die2); // Moves Player to new location, checks if they passed go (+$200)
 				String currentPlayerLocation = board[players[currentPlayer].getLocation()].getLocationName(); // gets string data for the location that CurrentPlayer moved to 
 				board[players[currentPlayer].getLocation()].incrementLandingCount(); // increase variable in location that stores the number of times a player has landed on it
