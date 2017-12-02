@@ -1,10 +1,13 @@
 package engine;
 
+import static engine.Location.Type.FREEPARKING;
+import static engine.Location.Type.GO;
+import static engine.Location.Type.GOTOJAIL;
+import static engine.Location.Type.JAIL;
+import static engine.Location.Type.PROPERTY;
+
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
-import static engine.Location.Type.*;
 
 public class Main{
 	private static final int MAX_PLAYERS = 10;
@@ -18,7 +21,8 @@ public class Main{
 	static Player[] players = new Player[MAX_PLAYERS]; //contains player data
 	
 	static Location[] board = new Location[Board.MAX_LOCATION]; //contains location data
-	
+
+	static Scanner in = new Scanner(System.in);
 	/* Adds the number of players to PlayerDB as specified by the integer input
 		Variables changed - PlayerDB */
 	static void setupPlayers(int numberOfPlayers) {
@@ -32,7 +36,7 @@ public class Main{
 		}
 	}
 	
-	/* Checks to see if atleast two players are still playing
+	/* Checks to see if at least two players are still playing
 		Variables changed - None */
 	static boolean hasGameEnded() {
 		int numberOfPlayersInGame = 0;
@@ -53,16 +57,12 @@ public class Main{
 	/* Waits for keyboard input of user for a Yes or No question and returns response
 		Variables changed - None */
 	static boolean askUserQuestion() {
-		char answer = 'q';
-		while (answer != 'y' && answer != 'n') {
-			Scanner reader = new Scanner(System.in);
-			answer = reader.next().trim().toLowerCase().charAt(0);
-			
-			if (answer != 'y' && answer != 'n' && answer != 'q') {
-				System.out.println("Please enter either Y/N.");
-			}
+		String answer = in.nextLine();;
+		while(!(answer.startsWith("Y") || answer.startsWith("N"))) {
+			System.out.println("Please enter either Y/N.");
+			answer = in.nextLine();
 		}
-		return answer == 'y';
+		return answer.startsWith("Y");
 	}
 	
 	/* Calculates if CurrentPlayer has any properties that can be mortgaged or unmortgaged and asks player
@@ -72,11 +72,11 @@ public class Main{
 		int unmortgagedPropertiesCount = 0;
 		int mortgagedPropertiesCount = 0;
 		for (int i = 0; i < Board.MAX_LOCATION; i++) {
-			if (board[i].getPlayerOwner() == currentPlayer && !board[i].isMortgaged()) {
-				unmortgagedPropertiesCount++;
-			}
 			if (board[i].getPlayerOwner() == currentPlayer && board[i].isMortgaged()) {
 				mortgagedPropertiesCount++;
+			}
+			else {
+				unmortgagedPropertiesCount++;
 			}
 		}
 		if (unmortgagedPropertiesCount > 0) {
@@ -230,13 +230,12 @@ public class Main{
 		
 		/* prompts user for number of players in the game */
 		System.out.println("How many players? ");
-		Scanner reader = new Scanner(System.in);
-		numberOfPlayers = Integer.parseInt(reader.next().trim());
+		numberOfPlayers = in.nextInt(); in.nextLine();
 		
 	
 		while (numberOfPlayers <= 1 || numberOfPlayers > MAX_PLAYERS) {
 			System.out.println("Please choose a number from 2 through 10. How many players? ");
-			numberOfPlayers = Integer.parseInt(reader.next().trim());
+			numberOfPlayers = Integer.parseInt(in.next().trim());
 		}
 		/* populates PlayerDB with the number of players specified above */
 		setupPlayers(numberOfPlayers);
@@ -320,7 +319,7 @@ public class Main{
 	
 			nextPlayer(); // Calculates next player and restarts loop
 		}
-		
+		in.close();
 	}
 }
 
