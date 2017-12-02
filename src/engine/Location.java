@@ -1,8 +1,13 @@
 package engine;
 
 public class Location {
+
+	public enum Type {
+		GO, PROPERTY, JAIL, GOTOJAIL, FREEPARKING
+	};
+
 	private String LocationName; /* holds a pointer to the strings name */
-	private int LocationType; /* holds a number representing the type of location */
+	private Type LocationType; /* holds a number representing the type of location */
 	private int PurchasePrice; /* holds an amount of the price of purchase for the location */
 	private int MortgageValue; /* holds an amount of cash given to the player when mortgaged */
 	private boolean isMortgaged; /* is true if the the location has been mortgaged */
@@ -12,7 +17,7 @@ public class Location {
 
 	public Location() {
 		LocationName = "";
-		LocationType = 0;
+		LocationType = Type.PROPERTY;
 		PurchasePrice = 0;
 		MortgageValue = 0;
 		isMortgaged = false;
@@ -21,7 +26,7 @@ public class Location {
 		LandingCount = 0;
 	}
 	
-	Location(String LocationNameInput, int LocationTypeInput, int PurchasePriceInput, int MortgageValueInput, int RentValueInput) {
+	Location(String LocationNameInput, Type LocationTypeInput, int PurchasePriceInput, int MortgageValueInput, int RentValueInput) {
 		LocationName = LocationNameInput;
 		LocationType = LocationTypeInput;
 		PurchasePrice = PurchasePriceInput;
@@ -36,7 +41,7 @@ public class Location {
 		return LocationName;
 	}
 	
-	int GetLocationType() {
+	Type GetLocationType() {
 		return LocationType;
 	}
 	

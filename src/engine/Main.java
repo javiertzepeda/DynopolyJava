@@ -4,14 +4,9 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import static engine.Location.Type.*;
+
 public class Main{
-	/* definition of location codes */
-	private static final int GO =  0;
-	private static final int PROPERTY = 1;
-	private static final int JAIL = 2;
-	private static final int GOTOJAIL = 3;
-	private static final int FREEPARKING = 4;
-	
 	/* definition of Number of Locations and Maximum Number of Players, used for board creation */
 	private static final int NumLocations  = 26;
 	private static final int PlayerMax = 10;
