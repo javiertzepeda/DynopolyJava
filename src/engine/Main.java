@@ -27,7 +27,7 @@ public class Main{
 		int NumberPlayersCreated = 1;
 		while (NumberPlayers > 0) {
 			PlayerDB[NumberPlayersCreated - 1] = new Player();
-			PlayerDB[NumberPlayersCreated - 1].SetPlayerNumber(NumberPlayersCreated);
+			PlayerDB[NumberPlayersCreated - 1].setPlayerNumber(NumberPlayersCreated);
 			System.out.println(String.format("Added player %d to the game. \n", NumberPlayersCreated));
 			NumberPlayersCreated++;
 			NumberPlayers--;
@@ -39,7 +39,7 @@ public class Main{
 	static boolean WinnerIfTrue() {
 		int NumberOfPlayersInGame = 0;
 		for (int i = NumberPlayers; i > 0; i--) {
-			if (PlayerDB[i - 1].PlayingStatus()) {
+			if (PlayerDB[i - 1].isPlaying()) {
 				NumberOfPlayersInGame++;
 			}
 		}
@@ -86,45 +86,45 @@ public class Main{
 		int UnMortgagedPropertiesCount = 0;
 		int MortgagedPropertiesCount = 0;
 		for (int i = 0; i < NumLocations; i++) {
-			if (LocationDB[i].GetPlayerOwner() == CurrentPlayer && LocationDB[i].GetMortgageStatus() == false) {
+			if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == false) {
 				UnMortgagedPropertiesCount++;
 			}
-			if (LocationDB[i].GetPlayerOwner() == CurrentPlayer && LocationDB[i].GetMortgageStatus() == true) {
+			if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == true) {
 				MortgagedPropertiesCount++;
 			}
 		}
 		if (UnMortgagedPropertiesCount > 0) {
-			System.out.println(String.format("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.\n", UnMortgagedPropertiesCount, PlayerDB[CurrentPlayer].GetMoney()));
+			System.out.println(String.format("You own %d unmortgaged location(s). Would you like to mortgage any of them? Current player has $%d cash.\n", UnMortgagedPropertiesCount, PlayerDB[CurrentPlayer].getMoney()));
 			boolean answer = AskUserQuestion();
 			if (answer == true) {
 				for (int i = 0; i < NumLocations; i++) {
-					if (LocationDB[i].GetPlayerOwner() == CurrentPlayer && LocationDB[i].GetMortgageStatus() == false) {
-						System.out.println(String.format("Would you like to mortgage %s? Current player has $%d cash.\n", LocationDB[i].GetLocationName(), PlayerDB[CurrentPlayer].GetMoney()));
+					if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == false) {
+						System.out.println(String.format("Would you like to mortgage %s? Current player has $%d cash.\n", LocationDB[i].getLocationName(), PlayerDB[CurrentPlayer].getMoney()));
 						boolean answer2 = AskUserQuestion();
 						if (answer2 == true) {
-							LocationDB[i].ChangeMortgageProperty();
-							PlayerDB[CurrentPlayer].ChangeMoney(LocationDB[i].GetMortgageValue());
+							LocationDB[i].changeMortgageProperty();
+							PlayerDB[CurrentPlayer].changeMoney(LocationDB[i].getMortgageValue());
 						}
 					}
 				}
 			}
 		}
 		if (MortgagedPropertiesCount > 0) {
-			System.out.println(String.format("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.\n", MortgagedPropertiesCount, PlayerDB[CurrentPlayer].GetMoney()));
+			System.out.println(String.format("You own %d mortgaged location(s). Would you like to unmortgage any of them? Current player has $%d cash.\n", MortgagedPropertiesCount, PlayerDB[CurrentPlayer].getMoney()));
 			boolean answer = AskUserQuestion();
 			if (answer == true) {
 				for (int i = 0; i < NumLocations; i++) {
-					if (LocationDB[i].GetPlayerOwner() == CurrentPlayer && LocationDB[i].GetMortgageStatus() == true) {
-						int UnMortgageAmount = (LocationDB[i].GetMortgageValue() + (int)(LocationDB[i].GetMortgageValue() / 10));
-						System.out.println(String.format("Would you like to unmortgage %s for $%d? Current player has $%d cash.\n", LocationDB[i].GetLocationName(), UnMortgageAmount, PlayerDB[CurrentPlayer].GetMoney()));
+					if (LocationDB[i].getPlayerOwner() == CurrentPlayer && LocationDB[i].isMortgaged() == true) {
+						int UnMortgageAmount = (LocationDB[i].getMortgageValue() + (int)(LocationDB[i].getMortgageValue() / 10));
+						System.out.println(String.format("Would you like to unmortgage %s for $%d? Current player has $%d cash.\n", LocationDB[i].getLocationName(), UnMortgageAmount, PlayerDB[CurrentPlayer].getMoney()));
 						boolean answer2 = AskUserQuestion();
 						if (answer2 == true) {
-							if (PlayerDB[CurrentPlayer].GetMoney() < LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetPurchasePrice()) {
+							if (PlayerDB[CurrentPlayer].getMoney() < LocationDB[PlayerDB[CurrentPlayer].getLocation()].getPurchasePrice()) {
 								System.out.println(String.format("Player %d does not have enough money to unmortgage this property.\n", CurrentPlayer + 1));
 								return;
 							}
-							LocationDB[i].ChangeMortgageProperty();
-							PlayerDB[CurrentPlayer].ChangeMoney(-1 * UnMortgageAmount);
+							LocationDB[i].changeMortgageProperty();
+							PlayerDB[CurrentPlayer].changeMoney(-1 * UnMortgageAmount);
 						}
 					}
 				}
@@ -135,19 +135,19 @@ public class Main{
 	/* Checks whether CurrentPlayer is in Jail and hasn't paid and checks if they rolled doubles or want to pay to get out
 		Possible variables changed - Jail Property player owner, players' total money, Array JailDB values */
 	static boolean InJailCheck() {
-		if (LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationType() == JAIL && PlayerDB[CurrentPlayer].GetJailStatus()) {
+		if (LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationType() == JAIL && PlayerDB[CurrentPlayer].isJailed()) {
 			System.out.println(String.format("Player %d is in jail.\n", CurrentPlayer + 1));
 			if (Die1 == Die2) {
 				System.out.println(String.format("Since player %d has rolled doubles, they are now out of jail.\n", CurrentPlayer + 1));
-				PlayerDB[CurrentPlayer].ChangeJailStatus();
+				PlayerDB[CurrentPlayer].changeJailStatus();
 				return true;
-			}else if (PlayerDB[CurrentPlayer].GetMoney() > 50) {
-				System.out.println(String.format("Would Player %d like to pay $50 and get out of jail? Current player has $%d cash.\n", CurrentPlayer + 1,PlayerDB[CurrentPlayer].GetMoney()));
+			}else if (PlayerDB[CurrentPlayer].getMoney() > 50) {
+				System.out.println(String.format("Would Player %d like to pay $50 and get out of jail? Current player has $%d cash.\n", CurrentPlayer + 1,PlayerDB[CurrentPlayer].getMoney()));
 				boolean answer = AskUserQuestion();
 				if (answer == true) {
-					PlayerDB[CurrentPlayer].ChangeMoney(-50);
+					PlayerDB[CurrentPlayer].changeMoney(-50);
 					System.out.println(String.format("Player %d has paid the fine and is now out of jail.\n", CurrentPlayer + 1));
-					PlayerDB[CurrentPlayer].ChangeJailStatus();
+					PlayerDB[CurrentPlayer].changeJailStatus();
 					return true;
 				}
 				else {
@@ -167,20 +167,20 @@ public class Main{
 	
 	/* Checks current location of CurrentPlayer and prompts for actions if appropriate */
 	static void LandingOnCheck() {
-		if (LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationType() == PROPERTY) {
-			int CurrentLocationOwner = LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetPlayerOwner();
+		if (LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationType() == PROPERTY) {
+			int CurrentLocationOwner = LocationDB[PlayerDB[CurrentPlayer].getLocation()].getPlayerOwner();
 			if (CurrentLocationOwner == -1) {
-				System.out.println(String.format("No one owns this location. Would player %d like to purchase it for $%d? Current player has $%d cash.\n", CurrentPlayer + 1, LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetPurchasePrice(), PlayerDB[CurrentPlayer].GetMoney()));
+				System.out.println(String.format("No one owns this location. Would player %d like to purchase it for $%d? Current player has $%d cash.\n", CurrentPlayer + 1, LocationDB[PlayerDB[CurrentPlayer].getLocation()].getPurchasePrice(), PlayerDB[CurrentPlayer].getMoney()));
 				MortgageCheck();
 				boolean answer = AskUserQuestion();
 				if (answer == true) {
-					if (PlayerDB[CurrentPlayer].GetMoney() < LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetPurchasePrice()) {
+					if (PlayerDB[CurrentPlayer].getMoney() < LocationDB[PlayerDB[CurrentPlayer].getLocation()].getPurchasePrice()) {
 						System.out.println(String.format("Player %d does not have enough money to purchase this property.", CurrentPlayer + 1));
 						return;
 					}
-					LocationDB[PlayerDB[CurrentPlayer].GetLocation()].SetPlayerOwner(CurrentPlayer);
-					PlayerDB[CurrentPlayer].ChangeMoney(-1 * LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetPurchasePrice());
-					System.out.println(String.format("Player %d now owns %s\n", CurrentPlayer+1, LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationName()));
+					LocationDB[PlayerDB[CurrentPlayer].getLocation()].setPlayerOwner(CurrentPlayer);
+					PlayerDB[CurrentPlayer].changeMoney(-1 * LocationDB[PlayerDB[CurrentPlayer].getLocation()].getPurchasePrice());
+					System.out.println(String.format("Player %d now owns %s\n", CurrentPlayer+1, LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationName()));
 					return;
 				}
 			}
@@ -188,22 +188,22 @@ public class Main{
 				System.out.println(String.format("Player %d currently owns this location, and checks on all the employees to make sure they are happy.\n", CurrentPlayer+1));
 				return;
 			}
-			else if (LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetMortgageStatus()==false){
-				int RentValue = LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetRentValue();
+			else if (LocationDB[PlayerDB[CurrentPlayer].getLocation()].isMortgaged()==false){
+				int RentValue = LocationDB[PlayerDB[CurrentPlayer].getLocation()].getRentValue();
 				System.out.println(String.format("Player %d currently owns this location, and so player %d must pay the rent amount of $%d.\n", CurrentLocationOwner + 1, CurrentPlayer + 1, RentValue));
-				PlayerDB[CurrentPlayer].ChangeMoney(-1*RentValue);
-				PlayerDB[CurrentLocationOwner].ChangeMoney(RentValue);
+				PlayerDB[CurrentPlayer].changeMoney(-1*RentValue);
+				PlayerDB[CurrentLocationOwner].changeMoney(RentValue);
 				return;
 			}
 			else {
 				System.out.println(String.format("Player %d currently owns this location, but it is currently mortgaged so player %d does not have to pay rent.\n", CurrentLocationOwner + 1, CurrentPlayer + 1));
 			}
 		}
-		else if (LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationType() == GOTOJAIL) {
+		else if (LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationType() == GOTOJAIL) {
 			for (int i = 0; i < NumLocations; i++) {
-				if (LocationDB[i].GetLocationType() == JAIL) {
-					PlayerDB[CurrentPlayer].ChangeJailStatus();
-					PlayerDB[CurrentPlayer].SetLocation(i);
+				if (LocationDB[i].getLocationType() == JAIL) {
+					PlayerDB[CurrentPlayer].changeJailStatus();
+					PlayerDB[CurrentPlayer].setLocation(i);
 					System.out.println(String.format("Player %d has been moved to jail.\n", CurrentPlayer + 1));
 					return;
 				}
@@ -333,9 +333,9 @@ public class Main{
 			//MortgageCheck(); /* Uncomment to ask player if they would like to mortgage/unmortgage before they roll */
 			System.out.println(String.format("Player %d has rolled a %d and a %d.\n", CurrentPlayer + 1, Die1, Die2));
 			if (InJailCheck() == false) { // Before moving player, checks to see if a Player is in jail and needs to pay a fine
-				PlayerDB[CurrentPlayer].MoveLocation(Die1 + Die2); // Moves Player to new location, checks if they passed go (+$200)
-				String CurrentPlayerLocation = LocationDB[PlayerDB[CurrentPlayer].GetLocation()].GetLocationName(); // gets string data for the location that CurrentPlayer moved to 
-				LocationDB[PlayerDB[CurrentPlayer].GetLocation()].IncrementLandingCount(); // increase variable in location that stores the number of times a player has landed on it
+				PlayerDB[CurrentPlayer].moveLocation(Die1 + Die2); // Moves Player to new location, checks if they passed go (+$200)
+				String CurrentPlayerLocation = LocationDB[PlayerDB[CurrentPlayer].getLocation()].getLocationName(); // gets string data for the location that CurrentPlayer moved to 
+				LocationDB[PlayerDB[CurrentPlayer].getLocation()].incrementLandingCount(); // increase variable in location that stores the number of times a player has landed on it
 				System.out.println(String.format("Player %d moves %d spaces and lands on %s.\n", CurrentPlayer + 1, Die1 + Die2, CurrentPlayerLocation));
 				LandingOnCheck(); // Processes location to see if user landed on jail, on another player's property, an unpurchased property, or a property that doesn't require action
 			}

@@ -6,88 +6,88 @@ public class Location {
 		GO, PROPERTY, JAIL, GOTOJAIL, FREEPARKING
 	};
 
-	private String LocationName; /* holds a pointer to the strings name */
-	private Type LocationType; /* holds a number representing the type of location */
-	private int PurchasePrice; /* holds an amount of the price of purchase for the location */
-	private int MortgageValue; /* holds an amount of cash given to the player when mortgaged */
-	private boolean isMortgaged; /* is true if the the location has been mortgaged */
-	private int RentValue; /* holds the amount of rent */
-	private int PlayerOwner; /* holds the unique PlayerNumber of the owner of the location */
-	private int LandingCount; /* holds the number of times a player has landed on this location */
+	private String locationName; /* holds a pointer to the strings name */
+	private Type locationType; /* holds a number representing the type of location */
+	private int purchasePrice; /* holds an amount of the price of purchase for the location */
+	private int mortgageValue; /* holds an amount of cash given to the player when mortgaged */
+	private boolean mortgaged; /* is true if the the location has been mortgaged */
+	private int rentValue; /* holds the amount of rent */
+	private int playerOwner; /* holds the unique PlayerNumber of the owner of the location */
+	private int landingCount; /* holds the number of times a player has landed on this location */
 
 	public Location() {
-		LocationName = "";
-		LocationType = Type.PROPERTY;
-		PurchasePrice = 0;
-		MortgageValue = 0;
-		isMortgaged = false;
-		RentValue = 0;
-		PlayerOwner = -1;
-		LandingCount = 0;
+		locationName = "";
+		locationType = Type.PROPERTY;
+		purchasePrice = 0;
+		mortgageValue = 0;
+		mortgaged = false;
+		rentValue = 0;
+		playerOwner = -1;
+		landingCount = 0;
 	}
 	
-	Location(String LocationNameInput, Type LocationTypeInput, int PurchasePriceInput, int MortgageValueInput, int RentValueInput) {
-		LocationName = LocationNameInput;
-		LocationType = LocationTypeInput;
-		PurchasePrice = PurchasePriceInput;
-		MortgageValue = MortgageValueInput;
-		isMortgaged = false;
-		RentValue = RentValueInput;
-		PlayerOwner = -1;
-		LandingCount = 0;
+	Location(String locationName, Type locationType, int purchasePrice, int mortgageValue, int rentValue) {
+		this.locationName = locationName;
+		this.locationType = locationType;
+		this.purchasePrice = purchasePrice;
+		this.mortgageValue = mortgageValue;
+		this.mortgaged = false;
+		this.rentValue = rentValue;
+		this.playerOwner = -1;
+		this.landingCount = 0;
 	}
 	
-	String GetLocationName() {
-		return LocationName;
+	String getLocationName() {
+		return locationName;
 	}
 	
-	Type GetLocationType() {
-		return LocationType;
+	Type getLocationType() {
+		return locationType;
 	}
 	
-	int GetPurchasePrice() {
-		return PurchasePrice + this.GetPopularityBonus(1);
+	int getPurchasePrice() {
+		return purchasePrice + this.getPopularityBonus(1);
 	}
 	
-	int GetMortgageValue() {
-		return MortgageValue + this.GetPopularityBonus(1);
+	int getMortgageValue() {
+		return mortgageValue + this.getPopularityBonus(1);
 	}
 	
-	int GetRentValue() {
-		return RentValue + this.GetPopularityBonus(1);
+	int getRentValue() {
+		return rentValue + this.getPopularityBonus(1);
 	}
 	
-	int GetPopularityBonus(int modifier){
-		return modifier*LandingCount;
+	int getPopularityBonus(int modifier){
+		return modifier*landingCount;
 	}
 	
-	int GetPlayerOwner() {
-		return PlayerOwner;
+	int getPlayerOwner() {
+		return playerOwner;
 	}
 	
-	void SetPlayerOwner(int Player) {
-		PlayerOwner = Player;
+	void setPlayerOwner(int playerOwner) {
+		this.playerOwner = playerOwner;
 	}
 	
-	boolean GetMortgageStatus() {
-		return isMortgaged;
+	boolean isMortgaged() {
+		return mortgaged;
 	}
 	
-	void ChangeMortgageProperty() {
-		if (isMortgaged) {
-			isMortgaged = false;
+	void changeMortgageProperty() {
+		if (mortgaged) {
+			mortgaged = false;
 		}
 		else {
-			isMortgaged = true;
+			mortgaged = true;
 		}
 	}
 	
-	void IncrementLandingCount(){
-		LandingCount++;
+	void incrementLandingCount(){
+		landingCount++;
 	}
 	
-	int GetLandingCount(){
-		return LandingCount;
+	int getLandingCount(){
+		return landingCount;
 	}
 
 
