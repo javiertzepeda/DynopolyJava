@@ -1,5 +1,8 @@
 package engine;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +24,7 @@ public class Main{
 	static int Die2 = 0;
 	static int NumberPlayers;
 	static int CurrentPlayer;
+	static int maxDieSize = 6; 
 	
 	static Player[] PlayerDB = new Player[PlayerMax]; //contains player data
 	
@@ -265,6 +269,25 @@ public class Main{
 		}
 		/* populates PlayerDB with the number of players specified above */
 		SetupPlayers(NumberPlayers);
+		
+		boolean randomize;
+		System.out.println("Randomize the organization of the board?");
+		if (AskUserQuestion()) {
+			randomize = true;
+		}
+		else {
+			randomize = false;
+		}
+		
+		System.out.println("Maximum die size? (default is 6)");
+		maxDieSize = Integer.parseInt(reader.next().trim());
+		
+		System.out.println("Starting player money? (default is 1500)");
+		int startingIncome = Integer.parseInt(reader.next().trim());
+		
+		for(int i = 0; i < NumberPlayers; i++) {
+			PlayerDB[i].ChangeMoney(startingIncome - 1500);
+		}
 	
 		/* Sets up board */
 		String Loc0 = "Go";
@@ -319,6 +342,20 @@ public class Main{
 		LocationDB[24] = new Location(Loc24, PROPERTY, 350, 50, 35);
 		String Loc25 = "Boardwalk";
 		LocationDB[25] = new Location(Loc25, PROPERTY, 400, 50, 50);
+		
+		/* Random shuffling of board spaces */
+		if (randomize == true) {
+			List<Location> list = new ArrayList<>();
+			for (Location l : LocationDB) {
+				list.add(l);
+			}
+			
+			Collections.shuffle(list);
+			
+			for (int i = 0; i < list.size(); i++) {
+				LocationDB[i] = list.get(i);
+			}
+		}
 	
 		/* Randomly choose a player to go first */
 		Random rand = new Random();
@@ -327,8 +364,8 @@ public class Main{
 	
 		/* Infinitely loops game until only one player is left */
 		while (WinnerIfTrue() == false) {
-			Die1 = (rand.nextInt(50) + 1) % 6 + 1;
-			Die2 = (rand.nextInt(50) + 1) % 6 + 1;
+			Die1 = (rand.nextInt(50) + 1) % maxDieSize + 1;
+			Die2 = (rand.nextInt(50) + 1) % maxDieSize + 1;
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (InterruptedException e) {
