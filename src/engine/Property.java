@@ -8,4 +8,8 @@ public class Property extends Location {
 	@Override public <R> R accept(LocationVisitor<R> v) {
 		return v.visit(this);
 	}
+	
+	@Override public String toString() {
+		return this.getLocationName();
+	}
 }

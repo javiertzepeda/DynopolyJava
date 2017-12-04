@@ -1,14 +1,17 @@
 package engine;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Engine {
-	static final int MIN_PLAYERS = 10;
+	static final int MIN_PLAYERS = 2;
 	static final int MAX_PLAYERS = 10;
 
 	int die1 = 0;
 	int die2 = 0;
 	private int currentPlayer;
+	private boolean currentPlayerRolled;
 
 	Player[] players;
 	Board board;
@@ -35,6 +38,7 @@ public class Engine {
 
 	public void nextPlayer() {
 		currentPlayer = (currentPlayer + 1) % players.length;
+		currentPlayerRolled = false;
 	}
 
 	public int getMortgagedCount() {
@@ -56,6 +60,26 @@ public class Engine {
 		}
 		return count;
 	}
+	
+	public List<Location> getMortgagedProperties() {
+		ArrayList<Location> al = new ArrayList<>();
+		for (int i = 0; i < Board.MAX_LOCATION; i++) {
+			if (board.board[i].getPlayerOwner() == getCurrentPlayer() && board.board[i].isMortgaged()) {
+				al.add(board.board[i]);
+			}
+		}
+		return al;
+	}
+	
+	public List<Location> getUnmortgagedProperties() {
+		ArrayList<Location> al = new ArrayList<>();
+		for (int i = 0; i < Board.MAX_LOCATION; i++) {
+			if (board.board[i].getPlayerOwner() == getCurrentPlayer() && !board.board[i].isMortgaged()) {
+				al.add(board.board[i]);
+			}
+		}
+		return al;
+	}
 
 	public Player getCurrentPlayer() {
 		return players[currentPlayer];
@@ -68,9 +92,14 @@ public class Engine {
 	public void rollDie() {
 		die1 = (rand.nextInt(50) + 1) % 6 + 1;
 		die2 = (rand.nextInt(50) + 1) % 6 + 1;
+		currentPlayerRolled = true;
 	}
 	
 	public void selectRandomPlayer() {
 		currentPlayer = (rand.nextInt(50) + 1) % players.length;
+	}
+	
+	public boolean canCurrentPlayerRoll() {
+		return !currentPlayerRolled;
 	}
 }

@@ -8,8 +8,7 @@ public class Jail extends Location {
 
 	@Override
 	public <R> R accept(LocationVisitor<R> v) {
-		// TODO Auto-generated method stub
-		return null;
+		return v.visit(this);
 	}
 
 }

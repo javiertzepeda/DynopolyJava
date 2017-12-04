@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="engine.GuiController">
+   <center>
+      <TextArea fx:id="mainTextArea" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <right>
+      <VBox alignment="TOP_CENTER" prefHeight="768.0" prefWidth="156.0" spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#rollOnAction" text="Roll" />
+            <Button mnemonicParsing="false" onAction="#displayMoneyOnAction" text="Show Cash" />
+            <Button mnemonicParsing="false" onAction="#displayPriceOnAction" text="Show Price" />
+            <Button mnemonicParsing="false" onAction="#buyOnAction" text="Buy" />
+            <ComboBox fx:id="mortgageComboBox" prefWidth="150.0" />
+            <Button mnemonicParsing="false" onAction="#mortgageOnAction" text="Mortgage" />
+            <ComboBox fx:id="unmortgageComboBox" prefWidth="150.0" />
+            <Button mnemonicParsing="false" onAction="#unmortgageOnAction" text="Unmortgage" />
+            <Button mnemonicParsing="false" onAction="#endTurnOnAction" text="End Turn" />
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </VBox>
+   </right>
+</BorderPane>

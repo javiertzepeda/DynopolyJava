@@ -57,12 +57,7 @@ public class Player {
 		return jailed;
 	}
 	void changeJailStatus() {
-		if (jailed == true) {
-			jailed = false;
-		}
-		else {
-			jailed = true;
-		}
+		jailed = !jailed;
 	}
 	
 	@Override public String toString() {
