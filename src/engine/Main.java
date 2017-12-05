@@ -25,7 +25,7 @@ public class Main {
 
 			}
 		}
-		engine = new Engine(players, Board.defaultBoard());
+		engine = new Engine(players, Board.defaultBoard(), 2000, 6);
 
 		engine.selectRandomPlayer();
 		System.out.printf("Player %s has been randomly selected to go first.%n", engine.getCurrentPlayer());

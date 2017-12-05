@@ -16,7 +16,12 @@ public class GuiController {
 
 	@FXML
 	public void initialize() {
-		engine = new Engine(2, Board.defaultBoard());
+		if (GuiMain.shuffleLocations == false) {
+				engine = new Engine(GuiMain.players, Board.defaultBoard(), GuiMain.startingAmount, GuiMain.diceMax);
+		} 
+		else {
+				engine = new Engine(GuiMain.players, Board.randomBoard(), GuiMain.startingAmount, GuiMain.diceMax);
+		}
 		mainTextArea.appendText(String.format("It is player %s's turn.%n", engine.getCurrentPlayer()));
 	}
 

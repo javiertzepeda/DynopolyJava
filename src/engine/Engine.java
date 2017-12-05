@@ -12,15 +12,22 @@ public class Engine {
 	int die2 = 0;
 	private int currentPlayer;
 	private boolean currentPlayerRolled;
+	private int maxDieNum = 6;
+	private int startMoney = 1500;
 
 	Player[] players;
 	Board board;
 	Random rand;
 
-	public Engine(int numberOfPlayers, Board board) {
+	public Engine(int numberOfPlayers, Board board, int startingMoney, int maxDie) {
 		players = new Player[numberOfPlayers];
 		for (int i = 0; i < players.length; i++) {
 			players[i] = new Player(Integer.toString(i+1));
+		}
+		startMoney = startingMoney;
+		maxDieNum = maxDie;
+		for(int i = 0; i < numberOfPlayers; i++) {
+			players[i].changeMoney(startMoney - 1500);
 		}
 		this.board = board;
 		this.rand = new Random();
@@ -90,8 +97,8 @@ public class Engine {
 	}
 
 	public void rollDie() {
-		die1 = (rand.nextInt(50) + 1) % 6 + 1;
-		die2 = (rand.nextInt(50) + 1) % 6 + 1;
+		die1 = (rand.nextInt(50) + 1) % maxDieNum + 1;
+		die2 = (rand.nextInt(50) + 1) % maxDieNum + 1;
 		currentPlayerRolled = true;
 	}
 	
